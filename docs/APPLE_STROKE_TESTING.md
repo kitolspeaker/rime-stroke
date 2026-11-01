@@ -1,38 +1,19 @@
-# Apple 六鍵輸入方案：驗收清單
+# Windows manual acceptance checklist — Conway scheme
 
-## 核心預期
+1. Deploy stroke_apple.schema.yaml and stroke_apple.dict.yaml on Windows Weasel and confirm that the independent original stroke scheme still works.
+2. Verify J/K/L/U/I on single-stroke and multi-stroke codes; verify KP_1..KP_6 on an actual numeric keypad.
+3. Verify one and multiple O wildcards within the first five positions. Compare candidate differences against iPhone Traditional Stroke.
+4. Verify that a long character can be found by its **first five strokes**, not the optional macOS first-four-plus-last convention.
+5. Verify Hong Kong common characters such as 係, 唔, 冇, 嘅, 咗 are available and ranked appropriately for their codes.
+6. Verify that repeated candidate selection can change user ranking when Rime user dictionary learning is enabled.
+7. Test typing with F4 scheme switching, Space selection, Backspace, numeric candidate selection, and fast typing on Windows.
 
-- 能在小狼毫「輸入法設定」選取 `stroke_apple`，不影響原 `stroke`。
-- 在中文模式按 `J K L U I`，候選視窗分別顯示「一丨丿丶乛」筆畫標記；可輸出對應漢字。
-- 用 `O` 取代前五筆中的任意位置（可多次），候選仍能按其他已知筆畫縮小。
-- 數字小鍵盤 1–6 對應 J K L U I O；主鍵盤數字鍵用於選候選。
-- 完整筆順與首四筆＋最後一筆的五碼別名均可查字。
-- 繁體轉換開關預設打開；關閉後仍能輸入原詞庫漢字。
-- 重啟 Windows、重新部署後切換方案仍然有效。
+Current status: **GitHub static test only; Weasel end-to-end test pending.** No Apple iPhone candidate ranking, phrase prediction, or lexicon data are bundled. See README and docs/CONWAY_SOURCES.md.
 
-## 已知限制
-
-- Apple 專有候選排序、智能選字、iPhone 特有的鍵盤布局、文字預測與學習紀錄不在本版本範圍。
-- 萬用鍵的規則只做到「單筆替換」：第 1–5 筆可使用任意個 `O`；第 6–32 筆只允許一個 `O`，不能與其他 `O` 並用。
-- 候選表繼承 Rime 筆順詞庫，與 Apple 官方排序及字形收錄不同。
-- 五碼別名與完整筆順混合查詢，候選數量和排序會與 macOS 的「五筆畫模式」不同。
-- 仍需要在真實小狼毫環境驗證 deploy、候選、性能及 OpenCC 設定。
-
-## 手工測試記錄（待填）
-
-| 測試 | Windows 版本 / 小狼毫版本 | 結果 |
-|---|---|---|
-| 初次部署 | | 未測 |
-| J/K/L/U/I | | 未測 |
-| O 萬用（單次） | | 未測 |
-| O 萬用（多次、前五筆） | | 未測 |
-| KP_1–KP_6 | | 未測 |
-| 完整筆順 | | 未測 |
-| 首四筆＋尾筆 | | 未測 |
-| 繁體轉換 | | 未測 |
-| 長碼性能 | | 未測 |
-
-## 來源
-
-- [Apple 官方「筆畫－繁體」說明](https://support.apple.com/en-hk/guide/chinese-input-method/cimskt12969/mac)
-- [Rime 拼寫運算文件](https://github.com/rime/home/wiki/SpellingAlgebra)
+Suggested iPhone comparison fixture:
+| strokes | iOS language/version | candidates 1–10 | Weasel candidates | notes |
+|---|---|---|---|---|
+| 1 | zh-Hant / TBD | TBD | TBD | first horizontal stroke |
+| 2 | zh-Hant / TBD | TBD | TBD | first vertical stroke |
+| 12345 | zh-Hant / TBD | TBD | TBD | first five strokes |
+| 12*45 | zh-Hant / TBD | TBD | TBD | wildcard |

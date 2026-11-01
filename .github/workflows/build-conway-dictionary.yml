@@ -1,0 +1,44 @@
+name: Build Conway Traditional Stroke Dictionary
+on:
+  push:
+    branches:
+      - feature/conway-hk-stroke-dictionary
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-conway-dictionary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download pinned Conway Stroke Data and build dictionary
+        run: |
+          python scripts/build_conway_dictionary.py --download
+          test -s stroke_apple.dict.yaml
+          wc -l stroke_apple.dict.yaml
+      - name: Upload a downloadable dictionary even if push is disallowed
+        uses: actions/upload-artifact@v4
+        with:
+          name: conway-traditional-stroke-dictionary
+          path: stroke_apple.dict.yaml
+      - name: Commit generated dictionary to the feature branch
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stroke_apple.dict.yaml
+          if git diff --cached --quiet; then
+            echo "Dictionary unchanged"
+          else
+            git commit -m "build: generate pinned Conway Traditional five-stroke dictionary"
+            git push origin HEAD:feature/conway-hk-stroke-dictionary
+          fi
