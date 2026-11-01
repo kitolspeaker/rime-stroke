@@ -1,0 +1,141 @@
+# Apple-style six-key stroke prototype for Rime.
+# Independent of the original stroke.schema.yaml, which remains unchanged.
+# Uses the upstream stroke.dict.yaml; does not contain Apple dictionary data.
+schema:
+  schema_id: stroke_apple
+  name: "蘋果式六鍵筆畫（實驗）"
+  version: "0.1.0"
+  author:
+    - Rime stroke contributors
+    - kitolspeaker (Apple-style adaptation)
+  description: |
+    按鍵 J/K/L/U/I = 橫/豎/撇/點/折，O = 萬用（任意單筆）。
+    支援完整筆順，另提供首四筆＋最後一筆的五碼別名。
+    基於 Rime 原詞庫，非 Apple 官方輸入法或原生候選排序。
+  dependencies:
+    - luna_pinyin
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+  - name: traditional
+    reset: 1
+    states: [ 原碼, 繁體 ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - reverse_lookup_translator
+    - table_translator
+  filters:
+    - simplifier@traditional
+    - uniquifier
+
+speller:
+  alphabet: "jkluio"
+  delimiter: " '"
+  algebra:
+    # 長字另產生「首四筆＋最後一筆」五碼別名；原完整筆順仍保留。
+    - derive/^([hspnz]{4})[hspnz]+([hspnz])$/$1$2/
+    # 詞庫原編碼 h,s,p,n,z 轉為 Apple 鍵盤 J,K,L,U,I。
+    - xlit/hspnz/jklui/
+    # 第 1–5 位可使用任意數量 O（每個 O 取代剛好一筆）。
+    - derive/^([jkluio]{4})([jklui])([jkluio]*)$/$1o$3/
+    - derive/^([jkluio]{3})([jklui])([jkluio]*)$/$1o$3/
+    - derive/^([jkluio]{2})([jklui])([jkluio]*)$/$1o$3/
+    - derive/^([jkluio]{1})([jklui])([jkluio]*)$/$1o$3/
+    - derive/^([jkluio]{0})([jklui])([jkluio]*)$/$1o$3/
+    # 第 6–32 位亦可用一個 O；為防止組合爆炸，不與其他 O 混用。
+    - derive/^([jklui]{5})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{6})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{7})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{8})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{9})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{10})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{11})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{12})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{13})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{14})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{15})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{16})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{17})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{18})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{19})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{20})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{21})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{22})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{23})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{24})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{25})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{26})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{27})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{28})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{29})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{30})([jklui])([jklui]*)$/$1o$3/
+    - derive/^([jklui]{31})([jklui])([jklui]*)$/$1o$3/
+
+menu:
+  page_size: 9
+
+translator:
+  dictionary: stroke
+  enable_completion: true
+  enable_user_dict: true
+  enable_sentence: true
+  preedit_format:
+    - xlit/jkluio/一丨丿丶乛＊/
+  comment_format:
+    - xform/~//
+
+traditional:
+  option_name: traditional
+  opencc_config: s2t.json
+
+reverse_lookup:
+  dictionary: luna_pinyin
+  prefix: "`"
+  suffix: "'"
+  tips: 〔拼音〕
+  preedit_format:
+    - xform/([nl])v/$1ü/
+    - xform/([nl])ue/$1üe/
+    - xform/([jqxy])v/$1u/
+
+punctuator:
+  import_preset: default
+
+key_binder:
+  import_preset: default
+  bindings:
+    # Mac 字母鍵直接輸入 J/K/L/U/I/O；數字小鍵盤 1–6 轉為相同六鍵。
+    - { when: always, accept: KP_1, send: j }
+    - { when: always, accept: KP_2, send: k }
+    - { when: always, accept: KP_3, send: l }
+    - { when: always, accept: KP_4, send: u }
+    - { when: always, accept: KP_5, send: i }
+    - { when: always, accept: KP_6, send: o }
+
+recognizer:
+  import_preset: default
+  patterns:
+    reverse_lookup: "`[a-z]*'?$"
