@@ -90,8 +90,6 @@ def build(source_dir: Path, output: Path) -> tuple[int, int]:
         source["ranking-traditional.txt"],
         source["characters-simplified.txt"],
     )
-    if len(entries) < 1000 and source_dir.name != "fixtures":
-        raise RuntimeError(f"Unexpectedly small dictionary: {len(entries)} entries")
 
     header = (
         "# Rime dictionary generated from Conway Stroke Data; NOT an Apple dictionary.\n"
@@ -126,6 +124,8 @@ def main() -> None:
     if args.download:
         download_sources(args.source_dir)
     count, unique = build(args.source_dir, args.output)
+    if args.download and count < 1000:
+        raise RuntimeError(f"Unexpectedly small Conway dictionary: {count} entries")
     print(f"Built {args.output} ({count:,} entries / {unique:,} characters)")
 
 
