@@ -84,7 +84,7 @@ class ConwayStrokeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             folder = Path(tmp)
             (folder / "sequence-characters.txt").write_text(
-                "12\t係\n123456\t話\n123457\t話\n", encoding="utf-8"
+                "12\t係\n123451\t話\n123452\t話\n", encoding="utf-8"
             )
             (folder / "ranking-traditional.txt").write_text(
                 "係話\n", encoding="utf-8"
