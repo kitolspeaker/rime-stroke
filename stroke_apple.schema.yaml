@@ -3,15 +3,15 @@
 # Uses the upstream stroke.dict.yaml; does not contain Apple dictionary data.
 schema:
   schema_id: stroke_apple
-  name: "蘋果式六鍵筆畫（實驗）"
-  version: "0.1.0"
+  name: "Conway 繁體六鍵筆畫（實驗）"
+  version: "0.2.0"
   author:
     - Rime stroke contributors
     - kitolspeaker (Apple-style adaptation)
   description: |
     按鍵 J/K/L/U/I = 橫/豎/撇/點/折，O = 萬用（任意單筆）。
-    支援完整筆順，另提供首四筆＋最後一筆的五碼別名。
-    基於 Rime 原詞庫，非 Apple 官方輸入法或原生候選排序。
+    採用 Conway 香港繁體字頻與五筆前綴（最多五筆）及逐筆萬用鍵。
+    非 Apple 官方輸入法或原生候選排序。
   dependencies:
     - luna_pinyin
 
@@ -52,53 +52,22 @@ engine:
     - uniquifier
 
 speller:
+  # Conway dictionary already uses Apple-style J/K/L/U/I, truncated to
+  # the FIRST FIVE strokes. The wildcard O matches exactly one stroke.
   alphabet: "jkluio"
   delimiter: " '"
   algebra:
-    # 長字另產生「首四筆＋最後一筆」五碼別名；原完整筆順仍保留。
-    - derive/^([hspnz]{4})[hspnz]+([hspnz])$/$1$2/
-    # 詞庫原編碼 h,s,p,n,z 轉為 Apple 鍵盤 J,K,L,U,I。
-    - xlit/hspnz/jklui/
-    # 第 1–5 位可使用任意數量 O（每個 O 取代剛好一筆）。
     - derive/^([jkluio]{4})([jklui])([jkluio]*)$/$1o$3/
     - derive/^([jkluio]{3})([jklui])([jkluio]*)$/$1o$3/
     - derive/^([jkluio]{2})([jklui])([jkluio]*)$/$1o$3/
     - derive/^([jkluio]{1})([jklui])([jkluio]*)$/$1o$3/
     - derive/^([jkluio]{0})([jklui])([jkluio]*)$/$1o$3/
-    # 第 6–32 位亦可用一個 O；為防止組合爆炸，不與其他 O 混用。
-    - derive/^([jklui]{5})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{6})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{7})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{8})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{9})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{10})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{11})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{12})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{13})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{14})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{15})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{16})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{17})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{18})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{19})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{20})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{21})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{22})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{23})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{24})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{25})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{26})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{27})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{28})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{29})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{30})([jklui])([jklui]*)$/$1o$3/
-    - derive/^([jklui]{31})([jklui])([jklui]*)$/$1o$3/
 
 menu:
   page_size: 9
 
 translator:
-  dictionary: stroke
+  dictionary: stroke_apple
   enable_completion: true
   enable_user_dict: true
   enable_sentence: true
