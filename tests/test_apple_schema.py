@@ -26,7 +26,8 @@ def spellings(code: str) -> set[str]:
             additions = set()
             for current in values:
                 if re.search(pattern, current):
-                    additions.add(re.sub(pattern, replacement, current))
+                    py_replacement = re.sub(r"\\$(\\d+)", lambda m: r"\\g<" + m.group(1) + ">", replacement)
+                    additions.add(re.sub(pattern, py_replacement, current))
             values.update(additions)
         elif item.startswith("xlit/"):
             _, old, new, _ = item.split("/", 3)
